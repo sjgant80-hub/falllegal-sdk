@@ -1,22 +1,24 @@
 {
   "name": "@ai-native-solutions/falllegal-sdk",
   "version": "1.0.0",
-  "description": "UK law engine + matter management primitives for SRA-regulated firms. 12 practice areas, 30 strategic weaves, statute corpus, T0 offline Q&A, hash-linked audit chain, conflict-check, SRA 6yr retention. Research only, not legal advice.",
+  "description": "falllegal SDK · sovereign single-file library extracted from falllegal/index.html",
   "type": "module",
   "main": "src/index.js",
-  "exports": {
-    ".": "./src/index.js"
-  },
-  "files": ["src", "README.md", "LICENSE"],
+  "types": "src/index.d.ts",
+  "files": ["src", "docs", "README.md", "LICENSE"],
   "scripts": {
-    "test": "node -e \"import('./src/index.js').then(m=>{if(m.WEAVES.length!==30)throw new Error('weaves');if(m.PRACTICE_AREAS.length!==12)throw new Error('areas');const h=m.checkConflicts({clientName:'Ada',partyOpposing:'Bob'},{clients:[{id:'c1',firstName:'Ada',lastName:'Lovelace'}],matters:[{id:'m1',partyOpposing:'Bob Ross'}]});if(h.length<2)throw new Error('conflict');console.log('OK · weaves',m.WEAVES.length,'· areas',m.PRACTICE_AREAS.length,'· conflict hits',h.length)})\""
+    "test": "node --test test/",
+    "smoke": "node examples/smoke.js"
   },
-  "keywords": ["legal", "uk-law", "sra", "solicitors", "matter-management", "conflict-check", "audit-chain", "weaves", "cpr", "sovereign"],
+  "keywords": ["falllegal", "sdk", "sovereign", "ai-native-solutions"],
   "author": "AI-Native Solutions",
   "license": "MIT",
-  "homepage": "https://sjgant80-hub.github.io/falllegal-sdk",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjgant80-hub/falllegal-sdk.git"
+  },
+  "homepage": "https://sjgant80-hub.github.io/falllegal-sdk/",
+  "publishConfig": {
+    "access": "public"
   }
 }
