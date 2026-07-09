@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>falllegal-sdk · playground</title>
+<style>
+:root{--void:#0b0a0f;--ink:#1a1922;--line:#2a2934;--cream:#e6e1d6;--dim:#a8a395;--muted:#6e6a5e;--brass:#b8974a;--ox:#8b1a1a;--serif:'Libre Baskerville',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--void);color:var(--cream);font:14px/1.6 var(--sans);min-height:100vh}
+header{border-bottom:1px solid var(--line);padding:18px 24px;background:linear-gradient(180deg,#13121a,var(--void))}
+h1{font:600 22px/1.2 var(--serif);color:var(--cream)}
+h1 span{color:var(--brass)}
+.sub{font:11px/1 var(--mono);color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+main{max-width:1100px;margin:0 auto;padding:22px}
+.disclaimer{background:rgba(139,26,26,.16);border:1px solid var(--ox);border-left:3px solid var(--ox);padding:11px 15px;border-radius:3px;font-size:12.5px;margin-bottom:22px}
+.disclaimer b{color:var(--brass)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:#13121a;border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+h2{font:600 15px/1.2 var(--serif);color:var(--cream);margin-bottom:10px}
+h2 small{font:10px/1 var(--mono);color:var(--brass);letter-spacing:.1em;margin-left:7px;text-transform:uppercase}
+label{display:block;font:10px/1 var(--mono);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin:8px 0 4px}
+input,select,textarea{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--cream);border-radius:3px;padding:8px 10px;font:13px var(--sans);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brass)}
+button{margin-top:9px;padding:8px 14px;background:var(--brass);color:var(--void);border:none;border-radius:3px;font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+button:hover{background:#d4a95c}
+pre{margin-top:10px;background:var(--void);border:1px solid var(--line);border-radius:3px;padding:11px;font:12px/1.5 var(--mono);color:var(--dim);max-height:280px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.tag{display:inline-block;padding:2px 7px;border:1px solid var(--line);border-radius:2px;font:10px var(--mono);color:var(--brass);letter-spacing:.06em;margin:2px 3px 0 0}
+footer{padding:24px;text-align:center;font:11px var(--mono);color:var(--muted);letter-spacing:.08em}
+a{color:var(--brass)}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>◊</span> falllegal-sdk · playground</h1>
+  <div class="sub">30 weaves · 14 statutes · 14 T0 rules · SHA-256 audit chain</div>
+</header>
+<main>
+  <div class="disclaimer"><b>Research / informational only.</b> Not legal advice. Not a regulatory submission. Verify against primary sources.</div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Weave search <small>findWeaves</small></h2>
+      <label>Query</label><input id="wq" placeholder="Bolam, limitation, s.21…"/>
+      <label>Agent (optional)</label>
+      <select id="wa"><option value="">any</option><option>MAGNA</option><option>LIBERTY</option><option>CROWN</option><option>EQUITY</option><option>HEARTH</option><option>GUILD</option><option>PROCEDURE</option></select>
+      <button onclick="runWeaves()">Search</button>
+      <pre id="wo">↳ run to see results</pre>
+    </section>
+
+    <section class="card">
+      <h2>Statute corpus <small>findCorpus</small></h2>
+      <label>Query</label><input id="cq" placeholder="disclosure, welfare, TUPE…"/>
+      <label>Practice area</label>
+      <select id="ca"><option value="">any</option></select>
+      <button onclick="runCorpus()">Search</button>
+      <pre id="co">↳ run to see results</pre>
+    </section>
+
+    <section class="card">
+      <h2>T0 offline Q&amp;A <small>askT0</small></h2>
+      <label>Question</label><input id="tq" placeholder="PI limitation? CFA vs DBA? Bolam? s.21?"/>
+      <button onclick="runT0()">Ask</button>
+      <pre id="to">↳ ask to see rule</pre>
+    </section>
+
+    <section class="card">
+      <h2>Conflict check <small>checkConflicts</small></h2>
+      <label>Prospective client name</label><input id="pcName" value="Ada"/>
+      <label>Client email</label><input id="pcEmail" placeholder="ada@example.com"/>
+      <label>Party opposing</label><input id="pcOpp" value="Bob"/>
+      <button onclick="runConflict()">Check</button>
+      <pre id="cfo">↳ 1 existing client Ada Lovelace, 1 matter vs Bob Ross seeded</pre>
+    </section>
+
+    <section class="card" style="grid-column:1/-1">
+      <h2>Audit chain <small>appendAudit + verifyAuditChain</small></h2>
+      <button onclick="runAudit()">Build 3-entry chain and verify</button>
+      <pre id="ao">↳ run to build + verify</pre>
+    </section>
+  </div>
+</main>
+<footer>MIT · AI-Native Solutions · npm i @ai-native-solutions/falllegal-sdk</footer>
+
+<script type="module">
+import fl, { findWeaves, findCorpus, askT0, checkConflicts, appendAudit, verifyAuditChain, PRACTICE_AREAS } from '../src/index.js';
+
+// populate practice areas
+const ca = document.getElementById('ca');
+for (const p of PRACTICE_AREAS) { const o=document.createElement('option'); o.value=p.id; o.textContent=p.name; ca.appendChild(o); }
+
+const seededClients=[{id:'c1',firstName:'Ada',lastName:'Lovelace',email:'ada@example.com'}];
+const seededMatters=[{id:'m1',partyOpposing:'Bob Ross'}];
+
+window.runWeaves=()=>{
+  const r=findWeaves({query:document.getElementById('wq').value,agent:document.getElementById('wa').value});
+  document.getElementById('wo').textContent = r.length?r.slice(0,5).map(w=>`◊ ${w.id} · ${w.name}\n  agents: ${w.agents.join(', ')}\n  move:  ${w.move}`).join('\n\n')+(r.length>5?`\n\n… +${r.length-5} more`:''):'no hits';
+};
+window.runCorpus=()=>{
+  const r=findCorpus({query:document.getElementById('cq').value,area:document.getElementById('ca').value});
+  document.getElementById('co').textContent=r.length?r.slice(0,5).map(c=>`§ ${c.id} · ${c.title}\n  ${c.summary}`).join('\n\n')+(r.length>5?`\n\n… +${r.length-5} more`:''):'no hits';
+};
+window.runT0=()=>{
+  const r=askT0(document.getElementById('tq').value);
+  document.getElementById('to').textContent = r?`Q: ${r.q}\n\n${r.a}\n\n— ${r.disclaimer}`:'no rule matched — refine question';
+};
+window.runConflict=()=>{
+  const hits=checkConflicts({clientName:document.getElementById('pcName').value,clientEmail:document.getElementById('pcEmail').value,partyOpposing:document.getElementById('pcOpp').value},{clients:seededClients,matters:seededMatters});
+  document.getElementById('cfo').textContent = hits.length?JSON.stringify(hits,null,2):'no conflicts detected';
+};
+window.runAudit=async()=>{
+  let chain=[];
+  ({chain}=await appendAudit(chain,{action:'matter.opened',reasoning:'client-care sent',matterId:'mt_1'}));
+  ({chain}=await appendAudit(chain,{action:'conflict.cleared',matterId:'mt_1'}));
+  ({chain}=await appendAudit(chain,{action:'advice.issued',reasoning:'signed opinion per SRA 13.5',matterId:'mt_1'}));
+  const v=await verifyAuditChain(chain);
+  document.getElementById('ao').textContent = 'CHAIN (3 entries)\n\n'+chain.map(e=>`#${e.i} ${e.action}\n  prev: ${e.prevHash.slice(0,16)||'∅'}…\n  doc:  ${e.docHash.slice(0,16)}…`).join('\n\n')+`\n\nVERIFY → ok=${v.ok} · breaks=${v.breaks.length}`;
+};
+</script>
+</body>
+</html>
